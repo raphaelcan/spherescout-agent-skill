@@ -1,0 +1,5 @@
+interface:
+  display_name: "SphereScout Local Business Data"
+  short_description: "Find and export local business contacts"
+  brand_color: "#2563EB"
+  default_prompt: "Use $spherescout-local-business-data to find plumbers in Lyon with email addresses."

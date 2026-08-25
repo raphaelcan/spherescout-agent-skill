@@ -1,0 +1,29 @@
+{
+  "name": "spherescout-agent-skill",
+  "version": "1.0.0",
+  "description": "Find, preview, and export local business contacts through SphereScout.",
+  "author": {
+    "name": "SphereScout",
+    "url": "https://www.spherescout.io/"
+  },
+  "homepage": "https://www.spherescout.io/en/products/google-maps-extractor/",
+  "repository": "https://github.com/raphaelcan/spherescout-agent-skill",
+  "license": "MIT",
+  "keywords": ["local-business-data", "sales-prospecting", "lead-generation", "csv-export"],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "SphereScout Local Business Data",
+    "shortDescription": "Find and export local business contacts.",
+    "longDescription": "Search SphereScout by business category and geography, preview match counts, and export contact lists after explicit credit approval.",
+    "developerName": "SphereScout",
+    "category": "Productivity",
+    "capabilities": ["Read", "Interactive"],
+    "websiteURL": "https://www.spherescout.io/",
+    "defaultPrompt": [
+      "Find plumbers in Lyon with email addresses.",
+      "How many dentists are available in France?",
+      "Export Italian restaurants in Austin to CSV."
+    ],
+    "brandColor": "#2563EB"
+  }
+}
