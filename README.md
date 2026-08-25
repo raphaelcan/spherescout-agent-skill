@@ -6,17 +6,27 @@ The skill resolves business categories and locations, previews real match counts
 
 ## Install
 
-### ChatGPT and Codex
+### Codex
 
-Use the skill installer with this repository, or install the repository as a plugin when plugin installation is available in your client.
+Invoke `$skill-installer` and ask it to install:
 
-The standalone skill is located at:
+`https://github.com/raphaelcan/spherescout-agent-skill/tree/v1.0.1/skills/spherescout-local-business-data`
+
+Codex discovers the installed skill automatically. If it does not appear, restart Codex.
+
+### ChatGPT
+
+This repository includes the plugin manifest and OpenAI interface metadata required for plugin distribution. Until the plugin is listed in the universal plugin directory, use the standalone skill in the ChatGPT desktop app's Skills interface or download the package for local installation.
+
+### Skill package
+
+The standards-compliant standalone skill is located at:
 
 `skills/spherescout-local-business-data/`
 
 ### Other Agent Skills-compatible clients
 
-Download this repository and install the `skills/spherescout-local-business-data` directory using your client's documented skill directory.
+Download the versioned release and install the `skills/spherescout-local-business-data` directory using your client's documented skill directory. The package follows the open Agent Skills specification.
 
 ### Manual fallback
 

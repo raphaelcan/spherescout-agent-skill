@@ -1,6 +1,6 @@
 {
   "name": "spherescout-agent-skill",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Find, preview, and export local business contacts through SphereScout.",
   "author": {
     "name": "SphereScout",

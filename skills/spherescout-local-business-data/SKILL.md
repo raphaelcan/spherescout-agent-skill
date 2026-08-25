@@ -4,7 +4,7 @@ description: Search and export local-business contacts through SphereScout. Use 
 license: MIT
 metadata:
   author: SphereScout
-  version: "1.0.0"
+  version: "1.0.1"
 ---
 
 # SphereScout — Local Business Data Skill
