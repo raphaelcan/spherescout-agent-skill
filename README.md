@@ -14,6 +14,14 @@ Invoke `$skill-installer` and ask it to install:
 
 Codex discovers the installed skill automatically. If it does not appear, restart Codex.
 
+### Claude Code (CLI)
+
+Copy `skills/spherescout-local-business-data/` into `.claude/skills/spherescout-local-business-data/` in your project (or `~/.claude/skills/spherescout-local-business-data/` to make it available in every project), then restart Claude Code. It will appear in the available-skills list.
+
+### Claude.ai / Claude Desktop / Claude API
+
+Upload the `skills/spherescout-local-business-data/` directory as a Skill (Settings → Capabilities → Skills, or the Skills API). Only `SKILL.md` is required; the `agents/openai.yaml` file in that directory is Codex/ChatGPT-only metadata and can be omitted.
+
 ### ChatGPT
 
 This repository includes the plugin manifest and OpenAI interface metadata required for plugin distribution. Until the plugin is listed in the universal plugin directory, use the standalone skill in the ChatGPT desktop app's Skills interface or download the package for local installation.
