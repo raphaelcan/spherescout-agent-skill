@@ -4,7 +4,7 @@ description: Search and export local-business contacts through SphereScout. Use 
 license: MIT
 metadata:
   author: SphereScout
-  version: "1.1.0"
+  version: "1.2.0"
 ---
 
 # SphereScout — Local Business Data Skill
@@ -12,7 +12,7 @@ metadata:
 Find local businesses by category and geography, preview market size for free, then export verified business contacts from SphereScout's database.
 
 ## Requirements
-The agent needs internet access and a SphereScout API key for authenticated previews and exports.
+The agent needs internet access and a SphereScout API key. Any account can create one, including a free account: searching and previewing are free on every plan, while exports need an active paid subscription (see Plans and Access).
 
 ## API Key
 Ask the user for their SphereScout API key before browsing private previews or exporting. Store it as `SPHERESCOUT_API_KEY` and send it as:
@@ -21,7 +21,22 @@ Ask the user for their SphereScout API key before browsing private previews or e
 Authorization: Token $SPHERESCOUT_API_KEY
 ```
 
-Users can create an API key at https://www.spherescout.io/dashboard.
+Users can create an API key at https://www.spherescout.io/dashboard. A free account is enough to start; see Plans and Access for what each plan unlocks.
+
+## Plans and Access
+What a key can do depends on the account's plan:
+
+| Action | Free account | Paid subscription |
+|---|---|---|
+| Category and location lookups | Yes | Yes |
+| Search, counts and previews (`/api/companies/`) | Yes | Yes |
+| Starting an export (`/api/download-csv/`) | No | Yes, 1 credit per row |
+| Polling and downloading an export already started | Yes | Yes |
+| `personal_email_only=true` | No | Plans from $99/month |
+
+- A prospect without a paid plan still gets real value: resolve their category and places, show the true match count and the preview sample, and compare markets (cities, counties, filters such as `email=true`). Do this freely; it never costs credits.
+- When a paid-only call answers `403` with `validation_code: api_subscription_required`, nothing was charged. Tell the user, in one sentence, that exports need an active paid subscription (https://www.spherescout.io/en/pricing/), show what the export would contain (the preview count is the credit cost), and offer to keep refining the search. Their existing key starts working for exports as soon as they subscribe; they don't need a new key.
+- Don't retry a call that returned `api_subscription_required`, and don't try other endpoints to get around it.
 
 ## Connectivity
 Send a standard browser `User-Agent` header on every request, for example a recent Chrome desktop UA string. Requests using a default HTTP-library user agent (`curl`, raw `requests`, etc.) may be blocked with `403 Forbidden` by the edge network before they ever reach the API. If every call returns 403 regardless of the endpoint or auth header, this is almost always the cause.
@@ -34,7 +49,7 @@ This skill works with any AI agent that can read Markdown instructions and make 
 2. Resolve the country with `GET /api/locations/countries/` or a known ISO alpha-2 code. Always cross-check the target country against that list before calling `locations/search/`. An unsupported country returns the same empty `{"count":0,"locations":[]}` shape as a genuine no-match on a valid country, so a location search alone cannot tell you which happened — if the country isn't in the list, tell the user directly that SphereScout doesn't currently cover it instead of running a location search first.
 3. Resolve a city, region, or county with `GET /api/locations/search/?q=<place>&country=<alpha2>`. Prefer the narrowest level that matches the user's named place; only use a broader parent when it is genuinely coextensive with the match (see Location Lookup).
 4. Preview with `GET /api/companies/`. This returns counts plus samples and does not expose email addresses.
-5. Ask for explicit confirmation before `GET /api/download-csv/`. Exports deduct credits, one credit per exported row.
+5. Ask for explicit confirmation before `GET /api/download-csv/`. Exports deduct credits, one credit per exported row, and need an active paid subscription (see Plans and Access).
 6. Poll `GET /api/download-status/<search_id>/` until its `status` field is the lowercase string `completed` or `failed` (not `COMPLETED`/`FAILED`). Small exports often complete within a few seconds. Once complete, fetch `GET /api/download-completed-csv/<search_id>/`, which returns a time-limited signed `download_url` to fetch, not the file itself.
 
 ## Category Lookup
@@ -138,6 +153,8 @@ Authorization: Token $SPHERESCOUT_API_KEY
 
 ## Export Rule
 Never export before showing the preview count and asking the user to confirm the credit spend.
+
+If `GET /api/download-csv/` returns `403` with `validation_code: api_subscription_required`, the account has no active paid subscription and nothing was charged; follow Plans and Access.
 
 If `GET /api/download-csv/` returns `403` with `validation_code: insufficient_credits`, no credits were deducted. Tell the user `required_credits` vs `available_credits` in plain language, and suggest narrowing the search — add a location filter, or a `has_email`/`has_phone`/`has_website` filter — rather than retrying the same export.
 

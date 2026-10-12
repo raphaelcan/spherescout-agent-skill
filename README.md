@@ -10,7 +10,7 @@ The skill resolves business categories and locations, previews real match counts
 
 Invoke `$skill-installer` and ask it to install:
 
-`https://github.com/raphaelcan/spherescout-agent-skill/tree/v1.1.0/skills/spherescout-local-business-data`
+`https://github.com/raphaelcan/spherescout-agent-skill/tree/v1.2.0/skills/spherescout-local-business-data`
 
 Codex discovers the installed skill automatically. If it does not appear, restart Codex.
 
