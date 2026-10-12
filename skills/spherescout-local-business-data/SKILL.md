@@ -4,7 +4,7 @@ description: Search and export local-business contacts through SphereScout. Use 
 license: MIT
 metadata:
   author: SphereScout
-  version: "1.0.2"
+  version: "1.1.0"
 ---
 
 # SphereScout — Local Business Data Skill
@@ -59,7 +59,7 @@ Language notes:
 - Locations: `state_id` maps to `level1_location`; `city_id` maps to `level2_location`; `district_id` maps to `level3_location`.
 - Narrowing a location search: pass one or more `states=<level1_id>` or `counties=<level2_id>` params (repeatable) on `GET /api/locations/search/` to restrict results to a known parent. These take IDs, not names — do not append a state or country name into the `q` text string; `q=Austin, Texas` and similar combined strings return zero results.
 - Browsing without a text query: `GET /api/locations/level1/?country=<alpha2>` lists every state/region in a country; `GET /api/locations/level2/?country=<alpha2>&states=<level1_id>` lists every county/department within a given state; `GET /api/locations/level3/?country=<alpha2>&counties=<level2_id>` lists every city within a given county. All three also accept `ids=<id>` (repeatable) for direct batch lookup by ID. Unlike `GET /api/locations/search/`, these are not fuzzy-matched and are not capped at 10 rows per type — use them whenever the user's request is itself an enumeration ("every county in California"), or whenever you need certainty that no same-named row was cut off by the search endpoint's cap.
-- Filters: `has_email=true` maps to `email=true`; `has_phone=true` maps to `phone_number=true`; `has_website=true` maps to `website=true`; `main_activity_only=true` maps to `main_activity_only=true`.
+- Filters: `has_email=true` maps to `email=true`; `has_phone=true` maps to `phone_number=true`; `has_website=true` maps to `website=true`; `main_activity_only=true` maps to `main_activity_only=true`; `personal_email_only=true` maps to `personal_email_only=true` ($99+/month plans only, see Personal Emails).
 - Export format: pass `export_format=csv` or `export_format=excel`.
 
 ## Location Lookup
@@ -126,8 +126,15 @@ Authorization: Token $SPHERESCOUT_API_KEY
 - Use `has_email=true` when the user needs outreach-ready records.
 - Use `has_phone=true` or `has_website=true` only when the user asks for those fields.
 - Use `main_activity_only=true` for strict category matching.
+- Use `personal_email_only=true` when the user wants named emails instead of generic inboxes ("no info@", "no support@", "owner emails", "decision makers"). Send it together with `email=true`.
 - Prefer the narrowest location level that matches the user's named place; only broaden to a parent when it is genuinely coextensive with that place (see Location Lookup). Never broaden by default to "maximize coverage."
 - `page_size` is not read by `/api/companies/` in either mode and has no effect — omit it. Without `paginate=true` the preview sample is always up to 10 rows; with `paginate=true` each page is always 50 rows. Only trust `count`/`totalCount` as the true number of matches.
+
+## Personal Emails
+`personal_email_only=true` keeps only businesses with at least one named email address and removes generic inboxes (info@, contact@, support@, sales@, accueil@, kontakt@, noreply@...) from the exported file. It works in every country. Credits are charged only on the businesses that still match, so the preview count with the filter on is the export cost.
+
+- It's available on active subscriptions from $99/month. Otherwise both `/api/companies/` and `/api/download-csv/` answer `403` with `validation_code: personal_email_filter_requires_plan` and nothing is charged. Tell the user it's part of the $99/month plan and up, and offer to run the same search without it.
+- "Personal" means a named address such as jean.dupont@ or marie@, not a verified owner. Don't promise owner or decision-maker emails; say generic inboxes are removed.
 
 ## Export Rule
 Never export before showing the preview count and asking the user to confirm the credit spend.
@@ -137,6 +144,7 @@ If `GET /api/download-csv/` returns `403` with `validation_code: insufficient_cr
 ## Example Prompts
 - "Find plumbers in Lyon with emails."
 - "Find dentists in Los Angeles with phone numbers."
+- "Find restaurants in Paris with owner emails, not info@ or contact@."
 - "How many dentists are available in France?"
 - "Export Italian restaurants in Austin with websites to CSV."
 - "Build a county-level prospect list for roofers in California."
